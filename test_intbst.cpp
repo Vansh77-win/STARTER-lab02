@@ -25,6 +25,10 @@ std::string captureOutput(void (IntBST::*printMethod)() const, const IntBST& tre
 
 void testConstructionAndInsertion() {
     IntBST tree;
+    check(captureOutput(&IntBST::printInOrder, tree).empty(),
+          "empty in-order traversal has no output");
+    check(captureOutput(&IntBST::printPostOrder, tree).empty(),
+          "empty post-order traversal has no output");
     check(tree.count() == 0, "new tree has no nodes");
     check(tree.sum() == 0, "new tree has sum zero");
     check(!tree.contains(10), "new tree does not contain values");
@@ -47,10 +51,10 @@ void testTraversalsAndQueries() {
               "64 8 4 32 16 128 512 256 \n",
           "pre-order traversal");
     check(captureOutput(&IntBST::printInOrder, tree) ==
-              "4 8 16 32 64 128 256 512 \n",
+              "4 8 16 32 64 128 256 512 ",
           "in-order traversal");
     check(captureOutput(&IntBST::printPostOrder, tree) ==
-              "4 16 32 8 256 512 128 64 \n",
+              "4 16 32 8 256 512 128 64 ",
           "post-order traversal");
 
     check(tree.sum() == 1020, "sum of test tree");
@@ -61,6 +65,10 @@ void testTraversalsAndQueries() {
 
     check(tree.getPredecessor(64) == 32, "predecessor of root");
     check(tree.getPredecessor(512) == 256, "predecessor with left subtree");
+    check(tree.getPredecessor(128) == 64,
+          "predecessor from an ancestor when target has no left subtree");
+    check(tree.getPredecessor(16) == 8,
+          "predecessor follows ancestors through left branches");
     check(tree.getPredecessor(4) == 0, "smallest value has no predecessor");
     check(tree.getPredecessor(17) == 0, "missing value has no predecessor");
     check(tree.getSuccessor(64) == 128, "successor of root");
@@ -82,7 +90,7 @@ void testRemovalAndDestruction() {
         check(tree.remove(128), "remove node with one child");
         check(!tree.remove(128), "removing a missing value returns false");
         check(captureOutput(&IntBST::printInOrder, tree) ==
-                  "8 16 32 256 512 \n",
+                  "8 16 32 256 512 ",
               "tree remains ordered after removals");
         check(tree.count() == 5, "count after removals");
         check(!tree.contains(4) && !tree.contains(64) && !tree.contains(128),
@@ -95,7 +103,7 @@ void testRemovalAndDestruction() {
         tree.insert(5);
         tree.insert(15);
         check(tree.remove(10), "remove root with two children");
-        check(captureOutput(&IntBST::printInOrder, tree) == "5 15 \n",
+        check(captureOutput(&IntBST::printInOrder, tree) == "5 15 ",
               "root removal preserves both subtrees");
     }
 

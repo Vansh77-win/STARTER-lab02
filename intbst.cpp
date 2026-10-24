@@ -44,15 +44,14 @@ bool IntBST::insert(int value, Node *n) {
             n->left = new Node(value);
             return true;
         }
-return insert(value, n->left);
+        return insert(value, n->left);
 
     } else if (value > n->info) {
         if (!n->right) {
             n->right = new Node(value);
             return true;
         }
-
-return insert(value, n->right);
+        return insert(value, n->right);
 
     } else {
         return false; // duplicate value
@@ -78,12 +77,10 @@ void IntBST::printPreOrder(Node *n) const {
 
 // print tree data in-order, with helper
 void IntBST::printInOrder() const {
-
     printInOrder(root);
-    cout << endl;
 }
-void IntBST::printInOrder(Node *n) const {
 
+void IntBST::printInOrder(Node *n) const {
     if (n) {
         printInOrder(n->left);
         cout << n->info << " ";
@@ -93,9 +90,7 @@ void IntBST::printInOrder(Node *n) const {
 
 // prints tree data post-order, with helper
 void IntBST::printPostOrder() const {
-
     printPostOrder(root);
-    cout << endl;
 }
 
 void IntBST::printPostOrder(Node *n) const {
@@ -148,25 +143,25 @@ bool IntBST::contains(int value) const {
 
 // returns the Node containing the predecessor of the given value
 IntBST::Node* IntBST::getPredecessorNode(int value) const{
+    Node* n = root;
+    Node* pred = nullptr;
 
-    Node* n = getNodeFor(value, root);
-    if (!n) return NULL;
-
-    if (n->left) {
-        n = n->left;
-        while (n->right) n = n->right;
-        return n;
-    }
-
-    Node* pred = NULL;
-    while (n && value != n->info) {
-        if (value > n->info) {
+    while (n && n->info != value) {
+        if (value < n->info) {
+            n = n->left;
+        } else {
             pred = n;
             n = n->right;
-        } else {
-            n = n->left;
         }
     }
+
+    if (!n) return nullptr;
+
+    if (n->left) {
+        pred = n->left;
+        while (pred->right) pred = pred->right;
+    }
+
     return pred;
 }
 

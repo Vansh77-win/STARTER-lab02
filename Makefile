@@ -19,4 +19,4 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c -o $@ $<
 
 clean:
-	rm -f $(OBJECTS) intbst.o test_intbst.o $(TARGET) $(TEST_TARGET)
+	rm -f $(OBJECTS) test_intbst.o $(TARGET) $(TEST_TARGET)
